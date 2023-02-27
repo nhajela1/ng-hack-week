@@ -3,6 +3,13 @@ from bs4 import BeautifulSoup
 import sqlite3
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
+import string
+import re
+from nltk.corpus import stopwords, wordnet
+import nltk
+import pandas as pd
+from nltk import word_tokenize
+from nltk.stem import WordNetLemmatizer
 
 # Main page with all sectors and industries
 page = requests.get('https://disfold.com/sectors-industries/')
@@ -103,3 +110,22 @@ def get_description_and_url_for_companies(company_dict, category):
             pass
         conn.commit()
         conn.close()
+
+def tag_by_pos(tag):
+    if tag.startswith('J'):
+        return wordnet.ADJ
+    elif tag.startswith('V'):
+        return wordnet.VERB
+    elif tag.startswith('N'):
+        return wordnet.NOUN
+    elif tag.startswith('R'):
+        return wordnet.ADV
+    else:         
+        return None
+
+def get_df():
+    conn = sqlite3.connect('database.sqlite')
+    cursor = conn.cursor()
+    df = pd.read_sql_query("SELECT * FROM companies", conn)
+    conn.close()
+    return df
