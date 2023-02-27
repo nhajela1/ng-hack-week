@@ -32,7 +32,7 @@ html, body {
     padding: 20px 25px;
     float: right;
     margin-right: 20px;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .navbar a:hover {
@@ -66,13 +66,13 @@ html, body {
 
 .statement {
     font-size: 30px;
-    width: 60%;
+    width: 50%;
     margin-left: 100px;
 }
 
 .photo {
     transform: scale(35%);
-    width: 40%;
+    width: 50%;
     margin-right: 40px;
 }
 
