@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Vendor Search</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div class="background">
+
+    <div class="navbar">
+      <a href="#searchbar" id="logo">
+        <div>
+          <img src="NG_logo.png" id="NGlogo">
+        </div>
+      </a>
+      <a href="#contact"> Contact </a>
+      <a href="#about"> About </a>
+      <a href="#searchbar"> Search </a>
+    </div>
+
+    <div class="container">
+      <div class="statement">
+        <h1> Find <span id="amplify"> Companies. </span> </h1>
+        <h1> Explore <span id="amplify"> Possibilities. </span> </h1>
+      </div>
+      <div class="photo">
+        <img src="search.png">
+      </div>
+    </div>
+
+    <div class="container2" id="about">
+      <h1 id="aboutheader"> How does it work? </h1>
+      <div class="aboutinfo">
+        <p> This app was created using <span id="HTMLw"> HTML </span>, <span id="CSSw"> CSS </span>, <span id="PYTHONw">
+            Python </span> & <span id="FLASKw"> Flask</span> </p>
+        <br>
+        <p id="info"> This search engine identifies, scrapes, and gives out relevant information pertaining to
+          companies. </p>
+      </div>
+    </div>
+
+    <div class="search_prototype" id="searchbar">
+
+      <div class="container3">
+        <h1>Vendor Search</h1>
+        <!--         REMOVED POST METHOD / ACTION TEMPORARILY -->
+        <form action="" method="">
+          <label for="area">Technology Area:</label>
+          <select id="area" name="area">
+            <option value="Basic Materials">Basic Materials</option>
+            <option value="Communication Services">Communication Services</option>
+            <option value="Consumer Discretionary">Consumer Discretionary</option>
+            <option value="Consumer Staples">Consumer Staples</option>
+            <option value="Energy">Energy</option>
+            <option value="Financials">Financials</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Industrials">Industrials</option>
+            <option value="Real Estate">Real Estate</option>
+            <option value="Technology">Technology</option>
+            <option value="Utilities">Utilities</option>
+          </select>
+          <br>
+          <br>
+          <label for="product">Product (Optional):</label>
+          <input type="text" id="product" name="product">
+          <br>
+          <br>
+          <input type="submit" value="Search">
+        </form>
+      </div>
+
+    </div>
+
+    <div class="output">
+      <div class="outputcontainer">
+        <p> Output </p>
+      </div>
+    </div>
+
+    <div class="contacts" id="contact">
+      <div class="container4">
+        <h1> Contact Us:</h1>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>

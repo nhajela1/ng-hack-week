@@ -1,0 +1,141 @@
+html, body {
+    padding: 0px;
+    margin: 0px;
+    min-width: 1000px;
+    scroll-behavior: smooth;
+    font-family: 'dosisextralight';
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'dosisextralight';
+    src: url('dosis-variablefont_wght-webfont.woff2') format('woff2'),
+        url('dosis-variablefont_wght-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.background {
+    background-image: url('back.jpg');
+    background-size: cover;
+}
+
+.navbar {
+    width: 100%;
+    height: 125px;
+}
+
+.navbar a {
+    color: black;
+    text-decoration: none;
+    font-size: 50px;
+    padding: 20px 25px;
+    float: right;
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
+.navbar a:hover {
+  transition: 0.5s ease-in-out;
+  transform: scale(120%);
+  color:blue;
+}
+
+#logo:hover {
+  transform: scale(100%);
+}
+ 
+#logo {
+    float: left;
+    padding: 0px;
+    margin-top: 20px;
+}
+
+#NGlogo {
+    width: 420px;
+    height: 80px;
+}
+
+.container {
+    display: flex;
+    height: 600px;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+}
+
+.statement {
+    font-size: 30px;
+    width: 60%;
+    margin-left: 100px;
+}
+
+.photo {
+    transform: scale(35%);
+    width: 40%;
+    margin-right: 40px;
+}
+
+#amplify {
+    color: rgb(46, 41, 41);
+    font-size: 125px;
+}
+
+.container2 {
+  padding-top: 25px;
+  text-align: center;
+  height: 650px;
+}
+
+.container2 p{
+  font-size: 50px;
+  margin: 25px;
+}
+
+#aboutheader {
+  font-size: 175px;
+}
+
+#HTMLw {
+  color: orange;
+}
+
+#CSSw {
+  color: lightblue;
+}
+
+#PYTHONw {
+  color: #b3b305;
+}
+
+#FLASKw {
+  color: blue;
+}
+
+.container3 {
+  padding-top: 100px;
+  text-align: center;
+  height: 300px;
+}
+
+.output {
+  height:350px;
+}
+
+.outputcontainer {
+  height: 250px;
+  width: 800px;
+  margin: auto;
+  text-align: center;
+  align-items: center;
+  background-color: gray;
+}
+
+.contacts {
+  display: flex;
+}
+
+.container4 {
+  width: 100%;
+  margin-left: 25px;
+}
