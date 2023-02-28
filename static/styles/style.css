@@ -9,14 +9,14 @@ html, body {
 
 @font-face {
     font-family: 'dosisextralight';
-    src: url('dosis-variablefont_wght-webfont.woff2') format('woff2'),
-        url('dosis-variablefont_wght-webfont.woff') format('woff');
+    src: url('/static/styles/dosis-variablefont_wght-webfont.woff2') format('woff2'),
+        url('/static/styles/dosis-variablefont_wght-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 .background {
-    background-image: url('back.jpg');
+    background-image: url('/static/back.jpg');
     background-size: cover;
 }
 

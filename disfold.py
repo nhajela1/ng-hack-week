@@ -1,8 +1,24 @@
+from flask import Flask
+from flask_cors import CORS, cross_origin
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
+
+# Setting up Flask functionality
+app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+@app.route("/")
+@cross_origin()
+def flask_test():
+    return {
+        "hello": 1, "world": 2
+    }
+
+app.run(host= "127.0.0.1", port= "42069", debug= True)
 
 # Main page with all sectors and industries
 page = requests.get('https://disfold.com/sectors-industries/')
