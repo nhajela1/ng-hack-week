@@ -3,7 +3,10 @@ import sqlite3
 import pandas as pd
 
 app = Flask(__name__)
-
+length = 5
+names = []
+descriptions = []
+sites = []
 
 
 def get_df():
@@ -12,8 +15,11 @@ def get_df():
     conn.close()
     final_string = ""
     for index, row in df.iterrows():
-        string_output = f"\n{row['name']}\n{'-' * 100}\n{row['description']}\n{'-' * 100}\n{row['site']}\n{'-' * 100}\n"
-        final_string += string_output
+        # string_output = f"\n{row['name']}\n{'-' * 100}\n{row['description']}\n{'-' * 100}\n{row['site']}\n{'-' * 100}\n"
+        names.append(row['name'])
+        descriptions.append(row['description'])
+        sites.append(row['site'])
+        # final_string += string_output
     return final_string
 
 dataframe = get_df()
@@ -24,12 +30,12 @@ def retrieve_ans():
         industry_name = request.form.get('area')
         product_name = request.form.get('product')
 
-        return render_template('index.html', product_name = dataframe)
+        return render_template('index.html', length = length, names = names, descriptions = descriptions, sites = sites, product_name = dataframe)
 
     else:
-        return render_template('index.html')
+        return render_template('index.html', length = 0, names = names, descriptions = descriptions, sites = sites)
     
 def home():
-    return  render_template('index.html')
+    return  render_template('index.html', length = 0, names = names, descriptions = descriptions, sites = sites)
 if __name__ == "__main__":
     app.run(debug=True)

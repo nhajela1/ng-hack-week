@@ -46,24 +46,8 @@
       <div class="container3">
         <h1>Vendor Search</h1>
         <!--         REMOVED POST METHOD / ACTION TEMPORARILY -->
-        <form action="" method="post">
-          <label for="area">Technology Area:</label>
-          <select id="area" name="area">
-            <option value="Basic Materials">Basic Materials</option>
-            <option value="Communication Services">Communication Services</option>
-            <option value="Consumer Discretionary">Consumer Discretionary</option>
-            <option value="Consumer Staples">Consumer Staples</option>
-            <option value="Energy">Energy</option>
-            <option value="Financials">Financials</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Industrials">Industrials</option>
-            <option value="Real Estate">Real Estate</option>
-            <option value="Technology">Technology</option>
-            <option value="Utilities">Utilities</option>
-          </select>
+        <form class="search_engine" method="post">
           <br>
-          <br>
-          <label for="product">Product (Optional):</label>
           <input type="text" id="product" name="product">
           <br>
           <br>
@@ -75,18 +59,26 @@
 
     <div class="output">
       <div class="outputcontainer">
-        <h1>Results</h1>
-        {%block head%}
-        <p> {{industry_name}} </p>
         <br>
-        <p> {{product_name}} </p>
-        {%endblock%}
+        <h1>Results</h1>
+        {% block head %}
+          {% for i in range(length) %}
+            <div class="card">
+              <div class="results_container">
+                <h2>{{names[i]}}</h2>
+                <br>
+                <h4>{{descriptions[i]}}</h4>
+                <a href = "{{sites[i]}}">{{names[i]}}</a>
+              </div>
+            </div>
+          {% endfor %}
+        {% endblock %}
       </div>
     </div>
 
     <div class="contacts" id="contact">
       <div class="container4">
-        <h1> Contact Us:</h1>
+        <h1></h1>
       </div>
     </div>
 
