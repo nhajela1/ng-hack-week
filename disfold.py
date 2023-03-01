@@ -47,9 +47,12 @@ def get_all_company_urls_for_category(category_url):
     
     # Get the number of pages that the table has
     pages = soup.find('div', {'class': 'pagination'})
-    page_info = pages.find('a').text
-    match = re.search('\d+/(\d+)', page_info)
-    num_pages = int(match.group(1))
+    if pages is not None:
+        page_info = pages.find('a').text
+        match = re.search('\d+/(\d+)', page_info)
+        num_pages = int(match.group(1))
+    else:
+        num_pages = 1
     
     # Dictionary for all the names and urls of companies
     company_urls = {}
@@ -73,42 +76,33 @@ def get_all_company_urls_for_category(category_url):
         
     return company_urls
 
-def get_description_and_url_for_company(company_page):
-    """
-    Get the description and url for the company's site using
-    a disfold page link.
-    """
-    page = requests.get(company_page)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    para_tags = soup.find_all('p')
-    paragraphs = [p.get_text() for p in para_tags]
-    description = max(paragraphs, key=len)
-    url = soup.find('a', {'class': 'fa fa-laptop'}).get('href')
-    return [description, url]
-
 def get_description_and_url_for_companies(company_dict, category):
     """
-    Get the description and url for each company's site using
+    Get the description and url for each company’s site using
     a dictionary disfold page link. Save the results in the
     sqlite database.
     """
+    rank = 1
     for company, company_page in company_dict.items():
         page = requests.get(company_page)
         soup = BeautifulSoup(page.content, 'html.parser')
         para_tags = soup.find_all('p')
         paragraphs = [p.get_text() for p in para_tags]
         description = max(paragraphs, key=len)
-        url = soup.find('a', {'class': 'fa fa-laptop'}).get('href')
-
+        url_tag = soup.find('a', {'class': 'fa fa-laptop'})
+        if url_tag is None:
+            continue
+        url = url_tag.get('href')
         conn = sqlite3.connect('database.sqlite', timeout=10)
         cursor = conn.cursor()
         try:
             cursor.execute(
-            "INSERT INTO companies VALUES (?, ?, ?, ?, ?)",
-            (company, company_page, description, url, category)
+            "INSERT INTO companies VALUES (?, ?, ?, ?, ?, ?)",
+            (company, company_page, description, url, category, rank)
             )
         except sqlite3.IntegrityError:
             pass
+        rank += 1
         conn.commit()
         conn.close()
 
@@ -149,7 +143,7 @@ def get_df():
     """
     Returns all entries from the database as a dataframe.
     """
-    conn = sqlite3.connect('test_db.sqlite')
+    conn = sqlite3.connect('database.sqlite')
     cursor = conn.cursor()
     df = pd.read_sql_query("SELECT * FROM companies", conn)
     conn.close()
@@ -235,16 +229,8 @@ def final_similarity_scores(num_results, query):
     # Get the tf-idf scores
     for i, score in enumerate(cosine_angles[-num_results:][::-1]):
         final_df.loc[i,'score'] = score
+
+    # Only use search results with a score greater than 0
+    final_df = final_df[final_df['score'] > 0]
     
     return final_df
-
-def main():
-    query = input("Enter a query: ")
-    tf_idf_df = final_similarity_scores(5, query)
-    for index, row in tf_idf_df.iterrows():
-        print(row['name'])
-        print('-' * 100)
-        print(row['description'])
-        print('-' * 100)
-
-main()
