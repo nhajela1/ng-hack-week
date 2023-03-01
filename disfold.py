@@ -1,5 +1,3 @@
-from flask import Flask
-from flask_cors import CORS, cross_origin
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
@@ -10,22 +8,9 @@ import re
 from nltk.corpus import stopwords, wordnet
 import nltk
 import pandas as pd
+import numpy as np
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
-
-# Setting up Flask functionality
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-@app.route("/")
-@cross_origin()
-def flask_test():
-    return {
-        "hello": 1, "world": 2
-    }
-
-app.run(host= "127.0.0.1", port= "42069", debug= True)
 
 # Main page with all sectors and industries
 page = requests.get('https://disfold.com/sectors-industries/')
@@ -128,6 +113,9 @@ def get_description_and_url_for_companies(company_dict, category):
         conn.close()
 
 def tag_by_pos(tag):
+    """
+    Helper function to simplify nltk's pos tagging for use with wordnet.
+    """
     if tag.startswith('J'):
         return wordnet.ADJ
     elif tag.startswith('V'):
@@ -139,9 +127,124 @@ def tag_by_pos(tag):
     else:         
         return None
 
+def filter_and_lemmatize(tokens):
+    """
+    Filters and lemmatizes a list of strings. Filtering consists of:
+    - Removing stopwords
+    - Removing punctuation
+    - Removing words of length 1
+    - Part of speech tagging
+    - Lemmatization
+    """
+    new_entry = [word for word in tokens if word not in stopwords.words('english') 
+                 and word not in string.punctuation and len(word) > 1]
+    tagged = nltk.pos_tag(new_entry)
+    wordnet_tags = list(map(lambda x: (x[0], tag_by_pos(x[1])), tagged))
+    lemmatizer = WordNetLemmatizer()
+    lemmatized = [lemmatizer.lemmatize(word, tag) if tag is not None else word for word, tag in wordnet_tags]
+    final_string = ','.join(lemmatized)
+    return final_string
+
 def get_df():
-    conn = sqlite3.connect('database.sqlite')
+    """
+    Returns all entries from the database as a dataframe.
+    """
+    conn = sqlite3.connect('test_db.sqlite')
     cursor = conn.cursor()
     df = pd.read_sql_query("SELECT * FROM companies", conn)
     conn.close()
     return df
+
+def create_lemmatized_column():
+    """
+    Creates a filtered description column for each company in the database.
+    """
+    conn = sqlite3.connect('database.sqlite')
+    cursor = conn.cursor()
+    df = pd.read_sql_query("SELECT * FROM companies", conn)
+    df['lowered'] = df['description'].apply(lambda x: x.lower())
+    df['tokenized'] = df['lowered'].apply(lambda x: word_tokenize(x))
+    df['lemmatized'] = df['tokenized'].apply(lambda x: filter_and_lemmatize(x))
+    df.drop(['lowered', 'tokenized'], axis=1, inplace=True)
+    df.to_sql('companies', conn, if_exists='replace', index=False)
+    conn.close()
+
+def get_query_vector(tokens, vocabulary, model):
+    """
+    Create the query vector from a string of comma separated tokens.
+    """
+    query_vector = np.zeros(len(vocabulary))    
+    weighted_terms = model.transform(tokens)
+    for token in tokens[0].split(','):
+        try:
+            index = vocabulary.index(token)
+            query_vector[index]  = weighted_terms[0, index]
+        except:
+            pass
+    return query_vector
+
+def cosine_similarity(x, y):
+    """
+    Helper function which computes the cosine similarity as a metric for tf-idf.
+    """
+    similarity = np.dot(x, y)/(np.linalg.norm(x)*np.linalg.norm(y))
+    return similarity
+
+def final_similarity_scores(num_results, query):
+    df = get_df()
+
+    # Create the vocabulary set of all words across all the company descriptions
+    vocabulary = {word for word_string in df['lemmatized'] for word in word_string.split(',')}
+    vocabulary = list(vocabulary)
+
+    # Intialize the TF-IDF model
+    tf_idf = TfidfVectorizer(vocabulary=vocabulary)
+
+    # Fit the model
+    tf_idf.fit(df['lemmatized'])
+
+    # Transform the model
+    tf_idf_weights = tf_idf.transform(df['lemmatized'])
+
+    # Preprocess the query and store it in a dataframe
+    stripped_query = re.sub("\W+", " ", query).strip()
+    tokens = word_tokenize(stripped_query)
+    lowered = [x.lower() for x in tokens]
+    query_df = pd.DataFrame(columns=['filtered'])
+    query_df.loc[0,'filtered'] = lowered
+    query_df['filtered'] = query_df['filtered'].apply(lambda x: filter_and_lemmatize(x))
+    
+    # Calculate the cosine similarity between the query vector and each weighted vector
+    cosine_angles = []
+    query_vector = get_query_vector(query_df['filtered'], vocabulary, tf_idf)
+    for vocab_vector in tf_idf_weights.A:
+        cosine_angles.append(cosine_similarity(vocab_vector, query_vector))
+
+    # Sort the scores and indices
+    indices = np.array(cosine_angles).argsort()[-num_results:][::-1]
+    cosine_angles.sort()
+    final_df = pd.DataFrame()
+
+    # Get the final fields to be displayed
+    for i, index in enumerate(indices):
+        final_df.loc[i,'name'] = df['name'][index]
+        final_df.loc[i, 'description'] = df['description'][index]
+        final_df.loc[i,'site'] = df['site'][index]
+        final_df.loc[i, 'rank'] = df['rank'][index]
+
+    # Get the tf-idf scores
+    for i, score in enumerate(cosine_angles[-num_results:][::-1]):
+        final_df.loc[i,'score'] = score
+    
+    return final_df
+
+def main():
+    query = input("Enter a query: ")
+    tf_idf_df = final_similarity_scores(5, query)
+    for index, row in tf_idf_df.iterrows():
+        print(row['name'])
+        print('-' * 100)
+        print(row['description'])
+        print('-' * 100)
+
+main()
