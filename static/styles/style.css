@@ -9,14 +9,14 @@ html, body {
 
 @font-face {
     font-family: 'dosisextralight';
-    src: url('dosis-variablefont_wght-webfont.woff2') format('woff2'),
-        url('dosis-variablefont_wght-webfont.woff') format('woff');
+    src: url('/static/styles/dosis-variablefont_wght-webfont.woff2') format('woff2'),
+        url('/static/styles/dosis-variablefont_wght-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 .background {
-    background-image: url('back.jpg');
+    background-image: url('/static/back.jpg');
     background-size: cover;
 }
 
@@ -84,7 +84,7 @@ html, body {
 .container2 {
   padding-top: 25px;
   text-align: center;
-  height: 650px;
+  height: 750px;
 }
 
 .container2 p{
@@ -115,7 +115,12 @@ html, body {
 .container3 {
   padding-top: 100px;
   text-align: center;
-  height: 300px;
+  height: 400px;
+}
+
+.container3 h1 {
+  font-size: 55px;
+  font-weight: bold;
 }
 
 .output {
@@ -123,12 +128,11 @@ html, body {
 }
 
 .outputcontainer {
-  height: 250px;
-  width: 800px;
-  margin: auto;
+  height: auto;
+  width: 100%;
   text-align: center;
   align-items: center;
-  background-color: gray;
+  background-color: rgb(187, 231, 228);
 }
 
 .contacts {
@@ -138,4 +142,37 @@ html, body {
 .container4 {
   width: 100%;
   margin-left: 25px;
+}
+
+.card {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+/* Add some padding inside the card container */
+.results_container {
+  padding: 10px 16px;
+  margin-bottom: 5px;
+}
+
+input[type=text]{
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 25px;
+  height: 50px;
+  width: 50%;
+}
+
+input[type=submit]{
+  color: black;
+  font-size: 25px;
+  height: 50px;
+  width: 20%;
+  border-radius: 25px;
 }
