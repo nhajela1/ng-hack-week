@@ -27,8 +27,9 @@ dataframe = get_df()
 @app.route('/', methods =['GET', 'POST'])
 def retrieve_ans():
     if request.method == 'POST':
-        industry_name = request.form.get('area')
+        # industry_name = request.form.get('area')
         product_name = request.form.get('product')
+        print(product_name)
 
         return render_template('index.html', length = length, names = names, descriptions = descriptions, sites = sites, product_name = dataframe)
 
