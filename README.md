@@ -3,6 +3,7 @@
 ## NG Hack Week - Team 6
 
 Team Members – @nhajela1, @rohanahuja4, @aboss908, @aryan5276
+
 Mentor – Diana Felicione
 
 This project is a essentially a tool to search for a list of vendors that sell products related to the entered query by the user. It uses the Tfidf similarity algorithm to take in the search query, breaks it down and searches through a huge database of companies and their descriptions to match the vendors with the query to get the most accurate companies. 
